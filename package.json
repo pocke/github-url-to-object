@@ -1,5 +1,5 @@
 {
-  "name": "github-url-to-object",
+  "name": "@pocke/github-url-to-object",
   "version": "4.0.4",
   "description": "Extract user, repo, and other interesting properties from GitHub URLs",
   "main": "dist/commonjs.js",
