@@ -126,11 +126,6 @@ describe('github-url-to-object', function () {
       assert.equal(obj.repo, 'bar')
     })
 
-    it('defaults to master branch for git:// URLs', function () {
-      var obj = gh('git://github.com/foo/bar.git')
-      assert.equal(obj.branch, 'master')
-    })
-
     describe('github enterprise', function () {
       it('supports git@ URLs', function () {
         var obj = gh('git@ghe.example.com:heroku/heroku-flags.git', {enterprise: true})
@@ -185,36 +180,6 @@ describe('github-url-to-object', function () {
       assert.equal(obj.repo, 'outlet')
     })
 
-    it('defaults to master branch', function () {
-      var obj = gh('https://github.com/zeke/outlet')
-      assert.equal(obj.branch, 'master')
-    })
-
-    it('resolves tree-style URLS for branches other than master', function () {
-      var obj = gh('https://github.com/zeke/outlet/tree/other-branch')
-      assert.equal(obj.branch, 'other-branch')
-    })
-
-    it('resolves URLS for branches containing /', function () {
-      var obj = gh('https://github.com/zeke/outlet/tree/feature/other-branch')
-      assert.equal(obj.branch, 'feature/other-branch')
-    })
-
-    it('resolves URLS for branches containing .', function () {
-      var obj = gh('https://github.com/zeke/outlet/tree/2.1')
-      assert.equal(obj.branch, '2.1')
-    })
-
-    it('resolves blob-style URLS for branches other than master', function () {
-      var obj = gh('https://github.com/zeke/ord/blob/new-style/.gitignore')
-      assert.equal(obj.branch, 'new-style')
-    })
-
-    it('supports nested packages (lerna-style)', function () {
-      var obj = gh('https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-rest-spread/')
-      assert.equal(obj.https_url, 'https://github.com/babel/babel/tree/master/packages/babel-plugin-transform-object-rest-spread')
-    })
-
     describe('github enterprise', function () {
       it('supports http URLs', function () {
         var obj = gh('http://ghe.example.com/zeke/outlet.git', {enterprise: true})
@@ -244,10 +209,6 @@ describe('github-url-to-object', function () {
 
       it('repo', function () {
         assert.equal(obj.repo, 'ord')
-      })
-
-      it('branch', function () {
-        assert.equal(obj.branch, 'master')
       })
 
       it('tarball_url', function () {
@@ -284,10 +245,6 @@ describe('github-url-to-object', function () {
         assert.equal(obj.repo, 'outlet')
       })
 
-      it('branch', function () {
-        assert.equal(obj.branch, 'master')
-      })
-
       it('tarball_url', function () {
         assert.equal(obj.tarball_url, 'https://ghe.example.com/api/v3/repos/zeke/outlet/tarball/master')
       })
@@ -303,38 +260,6 @@ describe('github-url-to-object', function () {
       it('zip_url', function () {
         assert.equal(obj.zip_url, 'https://ghe.example.com/zeke/outlet/archive/master.zip')
       })
-    })
-  })
-
-  describe('branch other than master', function () {
-    var obj
-
-    before(function () {
-      obj = gh('zeke/ord#experiment')
-    })
-
-    it('applies to tarball_url', function () {
-      assert.equal(obj.tarball_url, 'https://api.github.com/repos/zeke/ord/tarball/experiment')
-    })
-
-    it('applies to https_url', function () {
-      assert.equal(obj.https_url, 'https://github.com/zeke/ord/blob/experiment')
-    })
-
-    it('applies to clone_url', function () {
-      assert.equal(obj.clone_url, 'https://github.com/zeke/ord')
-    })
-
-    it("doesn't apply to api_url", function () {
-      assert.equal(obj.api_url, 'https://api.github.com/repos/zeke/ord')
-    })
-
-    it('applies to travis_url', function () {
-      assert.equal(obj.travis_url, 'https://travis-ci.org/zeke/ord?branch=experiment')
-    })
-
-    it('applies to zip_url', function () {
-      assert.equal(obj.zip_url, 'https://github.com/zeke/ord/archive/experiment.zip')
     })
   })
 

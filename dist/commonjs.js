@@ -47,24 +47,13 @@ module.exports = function (repoUrl, opts) {
     if (!hostname) { return null }
     if (hostname !== 'github.com' && hostname !== 'www.github.com' && !opts.enterprise) { return null }
 
-    var parts = pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)(\/tree\/[\w-_\.\/]+)?(\/blob\/[\w-_\.\/]+)?/)
+    var parts = pathname.match(/^\/([\w-_]+)\/([\w-_\.]+)/)
     // ([\w-_\.]+)
     if (!parts) { return null }
     obj.user = parts[1]
     obj.repo = parts[2].replace(/\.git$/i, '')
 
     obj.host = hostname || 'github.com'
-
-    if (parts[3] && /^\/tree\/master\//.test(parts[3])) {
-      obj.branch = 'master'
-      obj.path = parts[3].replace(/\/$/, '')
-    } else if (parts[3]) {
-      obj.branch = parts[3].replace(/^\/tree\//, '').match(/[\w-_.]+\/{0,1}[\w-_]+/)[0]
-    } else if (parts[4]) {
-      obj.branch = parts[4].replace(/^\/blob\//, '').match(/[\w-_.]+\/{0,1}[\w-_]+/)[0]
-    } else {
-      obj.branch = 'master'
-    }
   }
 
   if (obj.host === 'github.com') {
@@ -73,23 +62,13 @@ module.exports = function (repoUrl, opts) {
     obj.apiHost = (obj.host) + "/api/v3"
   }
 
-  obj.tarball_url = "https://" + (obj.apiHost) + "/repos/" + (obj.user) + "/" + (obj.repo) + "/tarball/" + (obj.branch)
+  obj.tarball_url = "https://" + (obj.apiHost) + "/repos/" + (obj.user) + "/" + (obj.repo) + "/tarball/master"
   obj.clone_url = "https://" + (obj.host) + "/" + (obj.user) + "/" + (obj.repo)
 
-  if (obj.branch === 'master') {
-    obj.https_url = "https://" + (obj.host) + "/" + (obj.user) + "/" + (obj.repo)
-    obj.travis_url = "https://travis-ci.org/" + (obj.user) + "/" + (obj.repo)
-    obj.zip_url = "https://" + (obj.host) + "/" + (obj.user) + "/" + (obj.repo) + "/archive/master.zip"
-  } else {
-    obj.https_url = "https://" + (obj.host) + "/" + (obj.user) + "/" + (obj.repo) + "/blob/" + (obj.branch)
-    obj.travis_url = "https://travis-ci.org/" + (obj.user) + "/" + (obj.repo) + "?branch=" + (obj.branch)
-    obj.zip_url = "https://" + (obj.host) + "/" + (obj.user) + "/" + (obj.repo) + "/archive/" + (obj.branch) + ".zip"
-  }
+  obj.https_url = "https://" + (obj.host) + "/" + (obj.user) + "/" + (obj.repo)
+  obj.travis_url = "https://travis-ci.org/" + (obj.user) + "/" + (obj.repo)
+  obj.zip_url = "https://" + (obj.host) + "/" + (obj.user) + "/" + (obj.repo) + "/archive/master.zip"
 
-  // Support deep paths (like lerna-style repos)
-  if (obj.path) {
-    obj.https_url += obj.path
-  }
 
   obj.api_url = "https://" + (obj.apiHost) + "/repos/" + (obj.user) + "/" + (obj.repo)
 
